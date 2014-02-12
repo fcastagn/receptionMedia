@@ -13,12 +13,8 @@ public class ChoixDroneActivity extends Activity {
         setContentView(R.layout.activity_choix_drone);
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.choix_drone, menu);
-        return true;
+    public void onBackPressed() {
     }
-    
+        
 }
