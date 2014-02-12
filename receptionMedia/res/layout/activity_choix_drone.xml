@@ -8,4 +8,38 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ChoixDroneActivity" >
 
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/mercure_logo" android:contentDescription="@+string/image_de_fond"/>
+
+    <TextView
+        android:id="@+id/textViewChoixDrone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/ConnexionDrone"
+        android:layout_alignTop="@+id/imageView1"
+        android:text="application Mercure"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/ConnexionDrone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewChoixDrone"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="79dp"
+        android:text="Connexion au drone" />
+
+    <Button
+        android:id="@+id/boutonCredit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:text="Crédits" />
+
 </RelativeLayout>

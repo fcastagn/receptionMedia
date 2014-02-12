@@ -38,6 +38,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.receptionmedia.MercureActivity" />
         </activity>
+        <activity
+            android:name="com.example.receptionmedia.WifiActivity"
+            android:label="@string/title_activity_wifi" >
+        </activity>
     </application>
 
 </manifest>

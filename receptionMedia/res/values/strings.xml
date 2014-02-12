@@ -6,5 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="page_de_garde">Page de garde</string>
     <string name="title_activity_choix_drone">ChoixDroneActivity</string>
+    <string name="application_mercure">Application Mercure</string>
+    <string name="title_activity_wifi">WifiActivity</string>
 
 </resources>
