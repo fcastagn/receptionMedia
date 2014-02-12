@@ -27,7 +27,9 @@ public class ChargementPageGarde extends AsyncTask<Void, Boolean, Void>{
 
 	@Override
 	protected void onPostExecute(Void result) {
+		activity.finish();
 		activity.startActivity(new Intent(activity, ChoixDroneActivity.class));	
+		
 	}
 	
 }
