@@ -8,5 +8,7 @@
     <string name="title_activity_choix_drone">ChoixDroneActivity</string>
     <string name="application_mercure">Application Mercure</string>
     <string name="title_activity_wifi">WifiActivity</string>
+    <string name="title_activity_wi_fi_direct">WiFiDirectActivity</string>
+    <string name="scan">Scan</string>
 
 </resources>
