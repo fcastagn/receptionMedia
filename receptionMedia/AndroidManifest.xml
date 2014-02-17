@@ -23,7 +23,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.example.receptionmedia.MercureActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,18 +34,26 @@
         <activity
             android:name="com.example.receptionmedia.ChoixDroneActivity"
             android:label="@string/title_activity_choix_drone"
-            android:parentActivityName="com.example.receptionmedia.MercureActivity" >
+            android:parentActivityName="com.example.receptionmedia.MercureActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.receptionmedia.MercureActivity" />
         </activity>
         <activity
             android:name="com.example.receptionmedia.WifiActivity"
-            android:label="@string/title_activity_wifi" >
+            android:label="@string/title_activity_wifi"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.example.receptionmedia.WiFiDirectActivity"
-            android:label="@string/title_activity_wi_fi_direct" >
+            android:name="com.example.receptionmedia.RecuperationDonnees"
+            android:label="@string/title_activity_recuperation_donnees"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.example.receptionmedia.CreditsActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_credits" >
         </activity>
     </application>
 

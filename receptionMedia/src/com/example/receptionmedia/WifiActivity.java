@@ -1,5 +1,12 @@
 package com.example.receptionmedia;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.List;
 
 import android.app.Activity;
@@ -9,7 +16,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 public class WifiActivity extends Activity {
 
@@ -27,14 +34,13 @@ public class WifiActivity extends Activity {
 	private static WifiManager WifiManager;
 	private ArrayAdapter <String> net_array_adapter;
 	private List <ScanResult> Wlan_list;
-
-	public static final int WPA = 1;
-	public static final int WEP = 2;
+	private ProgressBar pg;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wifi);
-
+		pg = (ProgressBar) findViewById(R.id.progressBarDetectWifi);
+		pg.setVisibility(View.INVISIBLE);
 		WifiManager = (WifiManager)this.getSystemService(Context.WIFI_SERVICE);
 
 		net_array_adapter = new ArrayAdapter <String> (this, android.R.layout.simple_list_item_1);
@@ -49,6 +55,7 @@ public class WifiActivity extends Activity {
 		Button btn_scan = (Button)findViewById(R.id.btn_scan);
 		btn_scan.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
+				pg.setVisibility(View.VISIBLE);
 				Discovery();
 			}       
 		});
@@ -64,15 +71,14 @@ public class WifiActivity extends Activity {
 			Log.e("WifiActivity", value);
 			String name = value.substring(6, value.length());
 			Log.e("WifiActivity", name);
-			
+
 			String SSID = Wlan_list.get(arg2).SSID;
 			Log.e("WifiActivity" , SSID);
-			
+
 			String BSSID = Wlan_list.get(arg2).BSSID;
-			
 			Log.e("WifiActivity" , BSSID);
 			int Key = 0; 
-			
+
 			String PW = "FE3CCDD1E4935AFA56A91A9A3A";
 
 			connectToNetwork(BSSID, Key, PW, SSID);
@@ -94,16 +100,50 @@ public class WifiActivity extends Activity {
 						net_array_adapter.add("No network avaible");
 					}
 				}   
+				pg.setVisibility(View.INVISIBLE);
 			}
 		}
 	};
 
+	public static String RecuperationIP() {
+		BufferedReader br = null;
+		String IP = null;
+		try {
+			br = new BufferedReader(new FileReader("/proc/net/arp"));
+
+			String line;
+			line = br.readLine();
+			String line2 = br.readLine();
+			int a = line2.indexOf(".");
+
+			String premierOctet = line2.substring(0, a);
+			
+			int b = line2.indexOf(".", a+1);
+			String deuxiemeOctet = line2.substring(a+1, b);	
+			
+			int c = line2.indexOf(".", b+1);
+			String troisiemeOctet = line2.substring(b+1, c);
+			
+			int d = line2.indexOf(" ", c);
+			String quatriemeOctet = line2.substring(c+1, d);
+			
+			IP = premierOctet + "." + deuxiemeOctet + "." + troisiemeOctet + "." + quatriemeOctet;
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return IP;
+	}
 
 	public void connectToNetwork(String sBSSID, int iSecurityType, String sSecurityKey, String sSSID){
-		
-		
 		WifiConfiguration wfc = new WifiConfiguration();
-		 
 		wfc.SSID = "\"".concat(sSSID).concat("\"");
 		wfc.status = WifiConfiguration.Status.DISABLED;
 		wfc.priority = 40;
@@ -116,7 +156,7 @@ public class WifiActivity extends Activity {
 		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
 		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
 		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-		 
+
 		wfc.preSharedKey = "\"".concat("FE3CCDD1E4935AFA56A91A9A3A").concat("\"");
 		WifiManager wfMgr = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
 		int networkId = wfMgr.addNetwork(wfc);
@@ -124,12 +164,18 @@ public class WifiActivity extends Activity {
 		if (networkId != -1) {
 			Log.e("WifiActivity", "ca marche !!!!!!!!!!!!!!!!!!!!!!!!!!");
 			wfMgr.enableNetwork(networkId, true);
+			
+			String IP = RecuperationIP();
+			Log.e("WifiActivity", "adresse IPPPPPPPPPPPPPPPP " + IP);
+			Intent i = new Intent(WifiActivity.this, RecuperationDonnees.class);
+			i.putExtra("IP", IP);
+			startActivity(i);
 		}
 		else
 			Log.e("WifiActivity", "ca marche passssssssssssssss");
-		
-/********************************** Pour une connexion WEP ************************/
-	/*	wfc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
+		/********************************** Pour une connexion WEP ************************/
+		/*	wfc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 		wfc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
 		wfc.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
 		wfc.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
@@ -138,14 +184,14 @@ public class WifiActivity extends Activity {
 		wfc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
 		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
 		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
-		 
+
 		if (isHexString(password)) wfc.wepKeys[0] = password;
 		else wfc.wepKeys[0] = "\"".concat(password).concat("\"");
 		wfc.wepTxKeyIndex = 0;*/
-/**********************************************************************************/
-		
-/********************************** Pour une connexion sans clé ********************/
-	/*	wfc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+		/**********************************************************************************/
+
+		/********************************** Pour une connexion sans clé ********************/
+		/*	wfc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 		wfc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
 		wfc.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
 		wfc.allowedAuthAlgorithms.clear();
@@ -155,7 +201,55 @@ public class WifiActivity extends Activity {
 		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
 		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
 		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);*/
-/***********************************************************************************/
-		
+		/***********************************************************************************/
+
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+	}
+
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
 	}
 }

@@ -1,6 +1,5 @@
 package com.example.receptionmedia;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -42,21 +41,20 @@ public class ChoixDroneActivity extends Activity {
 		 
 		 credit.setOnClickListener(new View.OnClickListener() {
 	        	public void onClick(View v) {
-	        		
+	        		Intent intent = new Intent(ChoixDroneActivity.this, CreditsActivity.class);
+	        		startActivity(intent);
 	        	}
 	        });
 	}
 
 	@Override
 	public void onBackPressed() {
-		 //You may also add condition if (doubleBackToExitPressedOnce || fragmentManager.getBackStackEntryCount() != 0) // in case of Fragment-based add
         if (mRecentlyBackPressed) {
             mExitHandler.removeCallbacks(mExitRunnable);
             mExitHandler = null;
             WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE); 
     		wifiManager.setWifiEnabled(false);
-            finish();
-        
+            finish();  
         }
         else
         {

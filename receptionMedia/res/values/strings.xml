@@ -10,5 +10,8 @@
     <string name="title_activity_wifi">WifiActivity</string>
     <string name="title_activity_wi_fi_direct">WiFiDirectActivity</string>
     <string name="scan">Scan</string>
+    <string name="title_activity_recuperation_donnees">RecuperationDonnees</string>
+    <string name="title_activity_credits">CreditsActivity</string>
+    <string name="equipe_corto_maltese">Equipe Corto Maltese</string>
 
 </resources>

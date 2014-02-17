@@ -14,12 +14,10 @@ public class ChargementPageGarde extends AsyncTask<Void, Boolean, Void>{
 	}
 	
 	@Override
-	protected Void doInBackground(Void... params) {
-		// TODO Auto-generated method stub		
+	protected Void doInBackground(Void... params) {	
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -28,8 +26,7 @@ public class ChargementPageGarde extends AsyncTask<Void, Boolean, Void>{
 	@Override
 	protected void onPostExecute(Void result) {
 		activity.finish();
-		activity.startActivity(new Intent(activity, ChoixDroneActivity.class));	
-		
+		activity.startActivity(new Intent(activity, ChoixDroneActivity.class));			
 	}
 	
 }
