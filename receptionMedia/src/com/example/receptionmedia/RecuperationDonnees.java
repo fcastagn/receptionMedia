@@ -1,23 +1,19 @@
 package com.example.receptionmedia;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -44,8 +40,16 @@ public class RecuperationDonnees extends Activity{
 	private List <String> bufferReception;
 	private ArrayAdapter <String> array_reception;
 	private HashMap<String, String> fichierATelecharger = new HashMap<String, String>();
-	private static int cpt = 0;
-	private String Promotion = "promotion ";
+	private HashMap<String, String> site_internet = new HashMap<String, String>();
+	private static int cpt_promotion = 0;
+	private static int cpt_site_ent = 0;
+	private static int cpt_site_pro = 0;
+	private String Promotion = "Télécharger promotion ";
+	private String entete_dl = "DL :";
+	private String entete_site_ent = "SITE ENT :";
+	private String entete_site_pro = "SITE PRO :";
+	private String site_ent = "Site de l'entreprise ";
+	private String site_pro = "Site du produit ";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,23 +74,40 @@ public class RecuperationDonnees extends Activity{
 	private OnItemClickListener Net = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
 			String value = (String)array_reception.getItem(arg2);
+			System.out.println("VALUE : " + value);
 			String fichier = null;
-			if(value.contains("http"))
+			if(value.contains("Site"))
 			{
-				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(value)));
+				for (Map.Entry<String, String> entry  : site_internet.entrySet()) {
+					if(entry.getKey().equals(value))
+					{
+						fichier = entry.getValue();
+						System.out.println("fichier : " + fichier);
+					}
+				}
+				WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE); 
+				if(wifiManager.isWifiEnabled())
+					wifiManager.setWifiEnabled(false);
+				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(fichier)));
 			}
 			else
 			{
 				try {
-					
-					for (Map.Entry<String, String> entry : fichierATelecharger.entrySet()) {
+
+					for (Map.Entry<String, String> entry  : fichierATelecharger.entrySet()) {
 						if(entry.getKey().equals(value))
 						{
 							fichier = entry.getValue();
 							System.out.println("fichier : " + fichier);
+							if(!fichier.contains("http"))
+							{
+								WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE); 
+								wifiManager.setWifiEnabled(true);
+							}
 						}
 					}
-					File f = getFile(fichier, ".");
+
+					getFile(fichier, ".");
 					//String a ="\\Phone\\Download\\Autefage1-article.pdf";
 					//File f = getFile(a,".");
 				} catch (IOException e) {
@@ -102,8 +123,8 @@ public class RecuperationDonnees extends Activity{
 	};
 
 
-	public File getFile(String urlStr, String destFilePath) throws IOException, URISyntaxException {
-		int current;
+	public void getFile(String urlStr, String destFilePath) throws IOException, URISyntaxException {
+		/*int current;
 		if (urlStr == null) {
 			Log.d("getFile", "null");
 			return null;
@@ -133,7 +154,27 @@ public class RecuperationDonnees extends Activity{
 		} else {
 			return streamFile;
 		}
-		return streamFile;
+		return streamFile;*/
+		File file = new File(".\\Phone");
+
+		if (file.exists()) {
+			Uri path = Uri.fromFile(file);
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setDataAndType(path, "application/pdf");
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+			try {
+				startActivity(intent);
+			} 
+			catch (ActivityNotFoundException e) {
+				Toast.makeText(RecuperationDonnees.this, "No Application Available to View PDF",
+						Toast.LENGTH_SHORT).show();
+			}
+		}
+		else
+		{
+			System.out.println("probleme le fichier n'existe pas");
+		}
 	}
 
 	private class CommClient extends AsyncTask<Void, Void, Void>
@@ -148,6 +189,7 @@ public class RecuperationDonnees extends Activity{
 
 		@Override
 		protected Void doInBackground(Void... arg0) {
+			String clef;
 			try {
 				Log.e("RecuperationDonnees", "je passsssssssssssssssssssse ici");
 				InetAddress serverAddr = InetAddress.getByName("192.168.1.27"/*adresseIP*/);
@@ -157,19 +199,46 @@ public class RecuperationDonnees extends Activity{
 				inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				while (!(message = inFromServer.readLine()).equals("FIN"))
 				{	
-					if(!(message.startsWith("http")))
+					if((message.startsWith(entete_dl)))
 					{
 						System.out.println( "dans le if : " + message);
-						String clef = Promotion.concat(String.valueOf(cpt));
-						cpt++;
+						if(cpt_promotion != 0)
+							clef = Promotion.concat(String.valueOf(cpt_promotion));
+						else
+							clef = Promotion;
+						cpt_promotion++;
 						System.out.println("la clef est : " + clef);
-						fichierATelecharger.put(clef, message);
+						String tmp = message.substring(entete_dl.length(), message.length());
+						System.out.println("tmp : " + tmp);
+						fichierATelecharger.put(clef, tmp);
 						array_reception.add(clef);
+						clef="";
 					}
-					else
+					if((message.startsWith(entete_site_ent)))
 					{
-						array_reception.add(message);
+						String tmp = message.substring(entete_site_ent.length(), message.length());
+						if(cpt_site_ent !=0)
+							clef = site_ent.concat(String.valueOf(cpt_site_ent));
+						else
+							clef = site_ent;
+						cpt_site_ent++;
+						site_internet.put(clef, tmp);
+						array_reception.add(clef);
 						System.out.println( "dans le else : " + message);
+						clef="";
+					}
+					if((message.startsWith(entete_site_pro)))
+					{
+						String tmp = message.substring(entete_site_pro.length(), message.length());
+						if(cpt_site_pro !=0)
+							clef = site_pro.concat(String.valueOf(cpt_site_pro));
+						else
+							clef = site_pro;
+						cpt_site_pro++;
+						site_internet.put(clef, tmp);
+						array_reception.add(clef);
+						System.out.println( "dans le else : " + message);
+						clef="";
 					}
 				}
 				pg.setVisibility(View.INVISIBLE);
