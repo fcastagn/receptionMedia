@@ -13,5 +13,6 @@
     <string name="title_activity_recuperation_donnees">RecuperationDonnees</string>
     <string name="title_activity_credits">CreditsActivity</string>
     <string name="equipe_corto_maltese">Equipe Corto Maltese</string>
+    <string name="title_activity_bluetooth">Mercure équipe Corto Maltese</string>
 
 </resources>

@@ -17,8 +17,8 @@ public class MercureActivity extends Activity {
 		pg = (ProgressBar)findViewById(R.id.barChargement);
 		ChargementPageGarde cpg = new ChargementPageGarde(MercureActivity.this);
 		cpg.execute();
-		WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE); 
-		wifiManager.setWifiEnabled(true);
+		/*WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE); 
+		wifiManager.setWifiEnabled(true);*/
 	}
 
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/WiFi"
+          android:title="Wifi" android:visible="true" android:enabled="true"/>
+    <item android:id="@+id/Bluetooth"
+          android:title="Bluetooth" android:visible="true" android:enabled="true"/>
+</menu>
