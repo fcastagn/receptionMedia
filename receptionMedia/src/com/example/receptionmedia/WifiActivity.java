@@ -165,9 +165,11 @@ public class WifiActivity extends Activity {
 			Log.e("WifiActivity", "ca marche !!!!!!!!!!!!!!!!!!!!!!!!!!");
 			wfMgr.enableNetwork(networkId, true);
 			
+			String mode_de_connection = "Wifi";
 			String IP = RecuperationIP();
 			Log.e("WifiActivity", "adresse IPPPPPPPPPPPPPPPP " + IP);
 			Intent i = new Intent(WifiActivity.this, RecuperationDonnees.class);
+			i.putExtra("modeComm", mode_de_connection);
 			i.putExtra("IP", IP);
 			startActivity(i);
 		}

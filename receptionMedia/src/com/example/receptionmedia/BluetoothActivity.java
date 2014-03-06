@@ -32,14 +32,16 @@ public class BluetoothActivity extends ListActivity{
 	private Button btn_scan;
 	private ArrayAdapter<String> btArrayAdapter;
 	Set<BluetoothDevice> pairedDevices;
-	protected ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
+	public static ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
+	String mode_de_connection = "Bluetooth";
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_bluetooth);
 		pg = (ProgressBar) findViewById(R.id.progressBarDetectBlu);
-		
+
 		bluetoothAdaptateur = BluetoothAdapter.getDefaultAdapter();
 		btArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
 
@@ -57,7 +59,8 @@ public class BluetoothActivity extends ListActivity{
 				if (pairedDevices.size() > 0) {
 					for (BluetoothDevice device : pairedDevices) {
 						String deviceBTName = device.getName();
-						btArrayAdapter.add(deviceBTName + device.getAddress());
+						foundDevices.add(device);
+						btArrayAdapter.add(deviceBTName);
 					}
 				}
 				setListAdapter(btArrayAdapter);
@@ -69,26 +72,29 @@ public class BluetoothActivity extends ListActivity{
 
 
 	BroadcastReceiver discoveryResult = new BroadcastReceiver() {
-		
+
 		public void onReceive(Context context, Intent intent){
 			String remoteDeviceName = intent.getStringExtra(
 					BluetoothDevice.EXTRA_NAME);
 			BluetoothDevice remoteDevice = intent.getParcelableExtra(
 					BluetoothDevice.EXTRA_DEVICE);
 			Log.e(TAG,"jy suisssssssssssssssssssssssss 7");
-			btArrayAdapter.add(remoteDevice.getName() + remoteDevice.getAddress());
+			btArrayAdapter.add(remoteDevice.getName());
+			foundDevices.add(remoteDevice);
 			btArrayAdapter.notifyDataSetChanged();
 		}
 	};
 
 
-	private OnItemClickListener Net = new OnItemClickListener() {
-		public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
-			//String value = (String)mArrayAdapter.getItem(arg2);
-			//Log.e("WifiActivity", value);
-
-		}
-	};
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		String value = (String)btArrayAdapter.getItem(position);
+		Log.e("BluetoothActivity", value);
+		Intent intent = new Intent(BluetoothActivity.this, RecuperationDonnees.class);
+		intent.putExtra("modeComm", mode_de_connection);
+		intent.putExtra("nameBluetoot", value);
+		startActivity(intent);
+	} 
 
 	@Override
 	protected void onDestroy() {
@@ -131,7 +137,7 @@ public class BluetoothActivity extends ListActivity{
 		// TODO Auto-generated method stub
 		super.onStop();
 	}
-	
+
 	public class Attente extends AsyncTask<Void, Void, Void>
 	{
 
@@ -160,7 +166,7 @@ public class BluetoothActivity extends ListActivity{
 			super.onPreExecute();
 			pg.setVisibility(View.VISIBLE);
 		}
-		
+
 	}
 }
 
