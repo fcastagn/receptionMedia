@@ -304,9 +304,9 @@ public class RecuperationDonnees extends Activity{
 				if(mode_de_communication.equals("Wifi"))
 				{
 					Log.e("RecuperationDonnees", "je passsssssssssssssssssssse ici");
-					InetAddress serverAddr = InetAddress.getByName("192.168.1.27"/*adresseIP*/);
+					InetAddress serverAddr = InetAddress.getByName("192.168.1.69"/*adresseIP*/);
 					Log.e("RecuperationDonnees", "je passsssssssssssssssssssse laaaaaaaaaaaaaa");
-					socket = new Socket(serverAddr, 8080);
+					socket = new Socket(serverAddr, 40000);
 					Log.e("RecuperationDonnees", "je passsssssssssssssssssssse hhhhhhhhhhhhhhhhhhhh");
 					inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				}
