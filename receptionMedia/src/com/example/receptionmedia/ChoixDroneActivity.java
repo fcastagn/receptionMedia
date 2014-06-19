@@ -1,13 +1,5 @@
 package com.example.receptionmedia;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -57,17 +49,6 @@ public class ChoixDroneActivity extends Activity {
 			public void onClick(View v) {
 				if(wifiManager.isWifiEnabled())
 				{
-					try {
-						PrintWriter br = new PrintWriter(new BufferedWriter(new FileWriter("/proc/net/arp",false)));
-						br.println("");
-						
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 					Intent intent = new Intent(ChoixDroneActivity.this, WifiActivity.class);
 					startActivity(intent);
 				}

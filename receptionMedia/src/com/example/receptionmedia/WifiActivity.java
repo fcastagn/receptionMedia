@@ -89,45 +89,22 @@ public class WifiActivity extends Activity {
 	private final BroadcastReceiver Wifi = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			boolean res ;
 			net_array_adapter.clear();
 			Wlan_list = WifiManager.getScanResults();
 			if (WifiManager.isWifiEnabled() == false){
 				net_array_adapter.add("WLAN is currently disabled");
 			} else {
 				for(int i = 0; i < Wlan_list.size(); i++){
-					System.out.println(Wlan_list.size());
-					res = estPresent(Wlan_list.get(i).SSID);
-					System.out.println(res);
-					if(res == false)
-						net_array_adapter.add("Name: " + Wlan_list.get(i).SSID);
-					/*if (Wlan_list.size() == 0){
+					net_array_adapter.add("Name: " + Wlan_list.get(i).SSID);
+					if (net_array_adapter.getCount() == 0){
 						net_array_adapter.add("No network avaible");
-					}*/
+					}
 				}   
 				pg.setVisibility(View.INVISIBLE);
 			}
 		}
 	};
 
-	public boolean estPresent( String name)
-	{
-		boolean result = false;
-
-		for(int i=0;i<net_array_adapter.getCount();i++)
-		{
-			if(net_array_adapter.getItem(i).equals(name))
-			{
-				result = true;
-				return result;
-			}
-			else
-				result = false;
-		}
-		return result;
-
-
-	}
 	public static String RecuperationIP() {
 		BufferedReader br = null;
 		String IP = null;
@@ -140,19 +117,19 @@ public class WifiActivity extends Activity {
 			int a = line2.indexOf(".");
 
 			String premierOctet = line2.substring(0, a);
-
+			
 			int b = line2.indexOf(".", a+1);
 			String deuxiemeOctet = line2.substring(a+1, b);	
-
+			
 			int c = line2.indexOf(".", b+1);
 			String troisiemeOctet = line2.substring(b+1, c);
-
+			
 			int d = line2.indexOf(" ", c);
 			String quatriemeOctet = line2.substring(c+1, d);
-
+			
 			IP = premierOctet + "." + deuxiemeOctet + "." + troisiemeOctet + "." + quatriemeOctet;
-
-
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -167,7 +144,7 @@ public class WifiActivity extends Activity {
 
 	public void connectToNetwork(String sBSSID, int iSecurityType, String sSecurityKey, String sSSID){
 		WifiConfiguration wfc = new WifiConfiguration();
-		/*wfc.SSID = "\"".concat(sSSID).concat("\"");
+		wfc.SSID = "\"".concat(sSSID).concat("\"");
 		wfc.status = WifiConfiguration.Status.DISABLED;
 		wfc.priority = 40;
 		wfc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
@@ -180,28 +157,14 @@ public class WifiActivity extends Activity {
 		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
 		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
 
-		wfc.preSharedKey = "\"".concat("FE3CCDD1E4935AFA56A91A9A3A").concat("\"");*/
-
-
-
-		wfc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-		wfc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-		wfc.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-		wfc.allowedAuthAlgorithms.clear();
-		wfc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-		wfc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
-		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
-		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-		wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-
+		wfc.preSharedKey = "\"".concat("FE3CCDD1E4935AFA56A91A9A3A").concat("\"");
 		WifiManager wfMgr = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
 		int networkId = wfMgr.addNetwork(wfc);
 		Log.e("WifiActivity", "networkId : " + networkId);
 		if (networkId != -1) {
 			Log.e("WifiActivity", "ca marche !!!!!!!!!!!!!!!!!!!!!!!!!!");
 			wfMgr.enableNetwork(networkId, true);
-
+			
 			String mode_de_connection = "Wifi";
 			String IP = RecuperationIP();
 			Log.e("WifiActivity", "adresse IPPPPPPPPPPPPPPPP " + IP);
