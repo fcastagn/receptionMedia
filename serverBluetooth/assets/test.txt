@@ -1,4 +1,0 @@
-SITE ENT :http://www.lequipe.fr/
-DL :/proc/sys/toto.pdf
-DL :/test/pub.pdf
-FIN
